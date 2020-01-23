@@ -31,11 +31,6 @@ bookmarkRouter
       return res.status(400).send("url required");
     }
 
-    if (!description) {
-      logger.error("description is required");
-      return res.status(400).send("description required");
-    }
-
     if (!rating) {
       logger.error("rating is  required");
       return res.status(400).send("rating required");
@@ -72,15 +67,17 @@ bookmarkRouter
   .get((req, res, next) => {
     const { id } = req.params;
     const knexInstance = req.app.get("db");
-    BookmarksService.getById(knexInstance, id).then(bookmark => {
-      if (!bookmark) {
-        logger.error(`Bookmark with id ${id} not found.`);
-        return res.status(400).json({
-          error: { message: `Bookmark doesnt exist` }
-        });
-      }
-      return res.json(bookmark);
-    });
+    BookmarksService.getById(knexInstance, id)
+      .then(bookmark => {
+        if (!bookmark) {
+          logger.error(`Bookmark with id ${id} not found.`);
+          return res.status(404).json({
+            error: { message: `Bookmark doesnt exist` }
+          });
+        }
+        return res.json(bookmark);
+      })
+      .catch(next);
   })
   .delete((req, res) => {
     const { id } = req.params;
