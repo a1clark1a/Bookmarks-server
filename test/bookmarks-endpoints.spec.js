@@ -64,7 +64,7 @@ describe.only("Bookmarks endpoints", () => {
     context(`Given no bookmarks`, () => {
       it(`responds 404 whe bookmark doesn't exist`, () => {
         return supertest(app)
-          .get(`/bookmarks/123`)
+          .get(`/bookmarks/532`)
           .set("Authorization", `Bearer ${process.env.API_TOKEN}`)
           .expect(404, {
             error: { message: `Bookmark doesnt exist` }

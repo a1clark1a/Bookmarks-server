@@ -75,7 +75,7 @@ bookmarkRouter
             error: { message: `Bookmark doesnt exist` }
           });
         }
-        return res.json(bookmark);
+        res.json(bookmark);
       })
       .catch(next);
   })
