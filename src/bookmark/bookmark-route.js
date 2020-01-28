@@ -17,7 +17,7 @@ sanitizedBookmark = bookmark => ({
 });
 
 bookmarkRouter
-  .route("/bookmarks")
+  .route("/api/bookmarks")
   .get((req, res, next) => {
     const knexInstance = req.app.get("db");
     BookmarksService.getAllBookmarks(knexInstance)
@@ -53,14 +53,14 @@ bookmarkRouter
         logger.info(`Bookmark with id ${bookmark.id} created`);
         res
           .status(201)
-          .location(`/bookmarks/${bookmark.id}`)
+          .location(req.originalUrl + `/${bookmark.id}`)
           .json(sanitizedBookmark(bookmark));
       })
       .catch(next);
   });
 
 bookmarkRouter
-  .route("/bookmarks/:id")
+  .route("/api/bookmarks/:id")
   .all((req, res, next) => {
     const knexInstance = req.app.get("db");
     const { id } = req.params;
@@ -85,7 +85,28 @@ bookmarkRouter
     const { id } = req.params;
     BookmarksService.deleteBookmark(knexInstance, id)
       .then(bookmark => {
-        logger.info(`Bookmark with id ${id} deleted`);
+        logger.info(`Bookmark with id ${bookmark.id} deleted`);
+        res.status(204).end();
+      })
+      .catch(next);
+  })
+  .patch(bodyParser, (req, res, next) => {
+    const { title, url, description, rating } = req.body;
+    const bookmarkToUpdate = { title, url, description, rating };
+    const knexInstance = req.app.get("db");
+    const { id } = req.params;
+    const numberOfValues = Object.values(bookmarkToUpdate).filter(Boolean)
+      .length;
+    if (numberOfValues < 3) {
+      return res.status(400).json({
+        error: {
+          message: `Request body must have all required fields 'title', 'url' and 'rating'`
+        }
+      });
+    }
+
+    BookmarksService.updateBookmark(knexInstance, id, bookmarkToUpdate)
+      .then(numRowsAffected => {
         res.status(204).end();
       })
       .catch(next);
