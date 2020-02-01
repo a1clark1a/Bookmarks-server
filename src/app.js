@@ -22,7 +22,7 @@ app.use(cors());
 app.use(validateBearerToken);
 
 //ROUTER
-app.use(bookmarkRouter);
+app.use("/api/bookmarks", bookmarkRouter);
 
 //Error Handler
 app.use(errorHandler);

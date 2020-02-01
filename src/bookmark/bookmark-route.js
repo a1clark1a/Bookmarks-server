@@ -17,7 +17,7 @@ sanitizedBookmark = bookmark => ({
 });
 
 bookmarkRouter
-  .route("/api/bookmarks")
+  .route("/")
   .get((req, res, next) => {
     const knexInstance = req.app.get("db");
     BookmarksService.getAllBookmarks(knexInstance)
@@ -60,7 +60,7 @@ bookmarkRouter
   });
 
 bookmarkRouter
-  .route("/api/bookmarks/:id")
+  .route("/:id")
   .all((req, res, next) => {
     const knexInstance = req.app.get("db");
     const { id } = req.params;
