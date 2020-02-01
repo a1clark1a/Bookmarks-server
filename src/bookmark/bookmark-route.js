@@ -85,7 +85,7 @@ bookmarkRouter
     const { id } = req.params;
     BookmarksService.deleteBookmark(knexInstance, id)
       .then(bookmark => {
-        logger.info(`Bookmark with id ${bookmark.id} deleted`);
+        logger.info(`Bookmark with id ${id} deleted`);
         res.status(204).end();
       })
       .catch(next);
